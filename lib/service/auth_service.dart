@@ -1,6 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stisla/models/user_model.dart';
@@ -18,7 +16,7 @@ class AuthService {
 
   static Future requestLogin(String email, String password) async {
     final sharedPref = await SharedPreferences.getInstance();
-    var apiUrl = Uri.http('192.168.169.131:8000', '/api/auth/login');
+    var apiUrl = Uri.http('192.168.100.191:8000', '/api/auth/login');
 
     var response = await http.post(
       apiUrl,
@@ -51,19 +49,23 @@ class AuthService {
 
   static Future requestRegister(String name, String email, String password,
       String passwordConfirmation) async {
-    var apiUrl = Uri.http('192.168.169.131:8000', '/api/auth/register');
+    var apiUrl = Uri.http('192.168.100.191:8000', '/api/auth/register');
     final sharedPref = await SharedPreferences.getInstance();
 
-    final response = await http.post(apiUrl, headers: {
-      'Accept': 'application/json',
-      "Access-Control_Allow_Origin": "*"
-    }, body: {
-      'name': name,
-      'email': email,
-      'password': password,
-      'password_confirmation': passwordConfirmation,
-      'device_name': 'oxychan',
-    });
+    final response = await http.post(
+      apiUrl,
+      headers: {
+        'Accept': 'application/json',
+        "Access-Control_Allow_Origin": "*"
+      },
+      body: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+        'device_name': 'oxychan',
+      },
+    );
 
     var jsonObject = json.decode(response.body);
     var object = AuthService.createObjectResult(jsonObject);
@@ -81,7 +83,7 @@ class AuthService {
   }
 
   static Future requestLogout() async {
-    var apiUrl = Uri.http('192.168.169.131:8000', '/api/auth/logout');
+    var apiUrl = Uri.http('192.168.100.191:8000', '/api/auth/logout');
     final sharedPref = await SharedPreferences.getInstance();
     final token = sharedPref.getString('token');
 
