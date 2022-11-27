@@ -41,4 +41,25 @@ class CategoryService {
 
     return categoryServices;
   }
+
+  static Future requestAddCategory(String name) async {
+    var apiUrl = Uri.http('192.168.100.191:8000', '/api/category');
+
+    final sharedPref = await SharedPreferences.getInstance();
+    final token = sharedPref.getString('token');
+
+    final response = await http.post(
+      apiUrl,
+      headers: {
+        "Accept": "application/json",
+        "Access-Control_Allow_Origin": "*",
+        "Authorization": "Bearer $token",
+      },
+      body: {
+        "name": name,
+      },
+    );
+
+    return response;
+  }
 }

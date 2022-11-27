@@ -55,7 +55,7 @@ class AuthService {
     final response = await http.post(
       apiUrl,
       headers: {
-        'Accept': 'application/json',
+        "Accept": "application/json",
         "Access-Control_Allow_Origin": "*"
       },
       body: {
