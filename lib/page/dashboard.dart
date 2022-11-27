@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stisla/page/add_category.dart';
 import 'package:stisla/service/auth_service.dart';
 import 'package:stisla/service/category_service.dart';
-
 import '../models/category_model.dart';
+import 'list_categories.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -19,6 +21,9 @@ class _DashboardState extends State<Dashboard> {
   int selectedIndex = 0;
   int currentPage = 1;
   int lastPage = 0;
+  bool isLoading = true;
+
+  final ScrollController scrollController = ScrollController();
 
   Future<String> getToken() async {
     final sharedPref = await SharedPreferences.getInstance();
@@ -41,6 +46,17 @@ class _DashboardState extends State<Dashboard> {
       setState(() {
         categories = resultList[0];
         lastPage = resultList[1];
+        isLoading = false;
+      });
+    });
+  }
+
+  addMoreData() {
+    CategoryService.getCategories(currentPage.toString()).then((resultList) {
+      setState(() {
+        categories.addAll(resultList[0]);
+        lastPage = resultList[1];
+        isLoading = false;
       });
     });
   }
@@ -60,6 +76,19 @@ class _DashboardState extends State<Dashboard> {
       setState(() {
         user = value;
       });
+    });
+
+    scrollController.addListener(() {
+      if (scrollController.offset >=
+          scrollController.position.maxScrollExtent) {
+        if (currentPage < lastPage) {
+          setState(() {
+            isLoading = true;
+            currentPage++;
+            addMoreData();
+          });
+        }
+      }
     });
 
     fetchData();
@@ -153,7 +182,7 @@ class _DashboardState extends State<Dashboard> {
                               ),
                             ),
                             Text(
-                              user[0],
+                              isLoading ? 'Loading...' : user[0],
                               style: const TextStyle(
                                 fontSize: 20.0,
                                 color: Colors.white,
@@ -166,7 +195,7 @@ class _DashboardState extends State<Dashboard> {
                             top: 4.0,
                           ),
                           child: Text(
-                            user[1],
+                            isLoading ? 'Loading...' : user[1],
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w100,
@@ -190,128 +219,23 @@ class _DashboardState extends State<Dashboard> {
                     topRight: Radius.circular(25),
                   ),
                 ),
-                child: Column(
-                  children: [
-                    const Expanded(
-                      flex: 1,
-                      child: Center(
-                        child: Text(
-                          'Categories Data',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xff6777ef),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 6,
-                      child: GridView.builder(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 25.0,
-                        ),
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent:
-                              MediaQuery.of(context).size.width / 2,
-                          childAspectRatio: 2 / 2,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 8,
-                        ),
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) => Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white70,
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(15),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xff6777ef).withOpacity(0.2),
-                                spreadRadius: 1,
-                                blurRadius: 9,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                flex: 3,
-                                child: Image(
-                                  image: const AssetImage('assets/stisla.png'),
-                                  width: MediaQuery.of(context).size.width / 4,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 25.0,
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Container(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(15.0),
-                                        bottomRight: Radius.circular(15.0)),
-                                  ),
-                                  width: double.infinity,
-                                  height: double.infinity,
-                                  child: Center(
-                                    child: Text(
-                                      categories[index].name,
-                                      style: const TextStyle(
-                                        fontSize: 16.0,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff6777ef),
-                            ),
-                            onPressed: currentPage == 1
-                                ? null
-                                : () {
-                                    setState(() {
-                                      currentPage--;
-                                      fetchData();
-                                    });
-                                  },
-                            child: const Text('Prev'),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff6777ef),
-                            ),
-                            onPressed: currentPage == lastPage
-                                ? null
-                                : () {
-                                    setState(() {
-                                      currentPage++;
-                                      fetchData();
-                                    });
-                                  },
-                            child: const Text('Next'),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                child: (selectedIndex == 0)
+                    ? isLoading
+                        ? CircularPercentIndicator(
+                            radius: 60.0,
+                            lineWidth: 10.0,
+                            percent: 1.0,
+                            animation: true,
+                            center: const Text('Loading'),
+                            progressColor: const Color(0xff6777ef),
+                          )
+                        : (ListCategories(
+                            categories: categories,
+                            currentPage: currentPage,
+                            lastPage: lastPage,
+                            scrollController: scrollController,
+                          ))
+                    : const AddCategory(),
               ),
             ),
           ],
