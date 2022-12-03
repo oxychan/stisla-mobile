@@ -4,9 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/category_model.dart';
 
 class CategoryService {
+  static String endPoint = "http://192.168.100.191:8000";
+
   static Future<List<dynamic>> getCategories(String page) async {
     var apiUrl =
-        Uri.parse('http://192.168.100.191:8000/api/category?page=' + page);
+        Uri.parse('${CategoryService.endPoint}/api/category?page=$page');
     final sharedPref = await SharedPreferences.getInstance();
     final token = sharedPref.getString('token');
 
@@ -43,7 +45,7 @@ class CategoryService {
   }
 
   static Future requestAddCategory(String name) async {
-    var apiUrl = Uri.http('192.168.100.191:8000', '/api/category');
+    var apiUrl = Uri.parse('${CategoryService.endPoint}/api/category');
 
     final sharedPref = await SharedPreferences.getInstance();
     final token = sharedPref.getString('token');

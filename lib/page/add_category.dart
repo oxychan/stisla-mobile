@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:stisla/service/category_service.dart';
 
@@ -10,6 +12,8 @@ class AddCategory extends StatefulWidget {
 
 class _AddCategoryState extends State<AddCategory> {
   final TextEditingController categoryNameController = TextEditingController();
+
+  String? categoryNameError;
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +48,31 @@ class _AddCategoryState extends State<AddCategory> {
                     controller: categoryNameController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
                       fillColor: Colors.grey[100],
                       hintText: "Category Name",
                       prefixIcon: Icon(
-                        Icons.email,
+                        Icons.person,
                         color: Colors.grey[600],
                       ),
+                      errorText: categoryNameError,
+                      errorStyle: const TextStyle(
+                        fontSize: 16.0,
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0),
+                        borderSide:
+                            const BorderSide(color: Colors.red, width: 1.0),
+                      ),
                     ),
+                    onTap: () {
+                      setState(() {
+                        categoryNameError = null;
+                      });
+                    },
                   ),
                 ),
                 ElevatedButton(
@@ -84,8 +102,12 @@ class _AddCategoryState extends State<AddCategory> {
                       if (response.statusCode == 201) {
                         categoryNameController.clear();
                         Navigator.pushNamed(context, '/');
-                      } else {
-                        print('data gagal ditambahkan');
+                      } else if (response.statusCode == 422) {
+                        var jsonObj = json.decode(response.body);
+                        var errors = jsonObj['errors'];
+                        setState(() {
+                          categoryNameError = errors['name'][0];
+                        });
                       }
                     });
                   },

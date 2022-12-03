@@ -110,11 +110,13 @@ class _DashboardState extends State<Dashboard> {
         ],
         selectedItemColor: const Color(0xff6777ef),
         currentIndex: selectedIndex,
-        onTap: (int index) {
-          setState(() {
-            selectedIndex = index;
-          });
-        },
+        onTap: isLoading
+            ? null
+            : (int index) {
+                setState(() {
+                  selectedIndex = index;
+                });
+              },
       ),
       body: Container(
         constraints: BoxConstraints(

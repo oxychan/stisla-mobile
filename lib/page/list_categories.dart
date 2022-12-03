@@ -86,10 +86,14 @@ class ListCategories extends StatelessWidget {
                       width: double.infinity,
                       height: double.infinity,
                       child: Center(
-                        child: Text(
-                          categories[index].name,
-                          style: const TextStyle(
-                            fontSize: 16.0,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            categories[index].name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                            ),
                           ),
                         ),
                       ),
@@ -100,43 +104,6 @@ class ListCategories extends StatelessWidget {
             ),
           ),
         ),
-        // Expanded(
-        //   flex: 1,
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-        //     crossAxisAlignment: CrossAxisAlignment.end,
-        //     children: [
-        //       ElevatedButton(
-        //         style: ElevatedButton.styleFrom(
-        //           backgroundColor: const Color(0xff6777ef),
-        //         ),
-        //         onPressed: currentPage == 1
-        //             ? null
-        //             : () {
-        //                 // setState(() {
-        //                 //   currentPage--;
-        //                 //   fetchData();
-        //                 // });
-        //               },
-        //         child: const Text('Prev'),
-        //       ),
-        //       ElevatedButton(
-        //         style: ElevatedButton.styleFrom(
-        //           backgroundColor: const Color(0xff6777ef),
-        //         ),
-        //         onPressed: currentPage == lastPage
-        //             ? null
-        //             : () {
-        //                 // setState(() {
-        //                 //   currentPage++;
-        //                 //   fetchData();
-        //                 // });
-        //               },
-        //         child: const Text('Next'),
-        //       ),
-        //     ],
-        //   ),
-        // )
       ],
     );
   }
