@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stisla/page/dashboard.dart';
+import 'package:stisla/page/detail_category.dart';
 import 'package:stisla/page/login.dart';
 import 'package:stisla/page/register.dart';
 import 'package:stisla/page/splash_screen.dart';
@@ -11,7 +12,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,6 +25,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/splash': (context) => const SplashScreen(),
+        '/detail-category': (context) => const DetailCategory(),
       },
     );
   }

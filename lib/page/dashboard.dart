@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stisla/page/add_category.dart';
+import 'package:stisla/page/components/category_card.dart';
 import 'package:stisla/service/auth_service.dart';
 import 'package:stisla/service/category_service.dart';
 import '../models/category_model.dart';
-import 'list_categories.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class Dashboard extends StatefulWidget {
@@ -24,6 +24,8 @@ class _DashboardState extends State<Dashboard> {
   bool isLoading = true;
 
   final ScrollController scrollController = ScrollController();
+
+  final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
 
   Future<String> getToken() async {
     final sharedPref = await SharedPreferences.getInstance();
@@ -61,9 +63,19 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
+  deleteData(Category category) {
+    CategoryService.requestDelete(category).then((response) {
+      if (response.statusCode == 204) {
+        setState(() {
+          currentPage = 1;
+        });
+        fetchData();
+      }
+    });
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     getToken().then((value) {
@@ -97,6 +109,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldkey,
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -231,12 +244,53 @@ class _DashboardState extends State<Dashboard> {
                             center: const Text('Loading'),
                             progressColor: const Color(0xff6777ef),
                           )
-                        : (ListCategories(
-                            categories: categories,
-                            currentPage: currentPage,
-                            lastPage: lastPage,
-                            scrollController: scrollController,
-                          ))
+                        // : (ListCategories(
+                        //     alertContext: _scaffoldkey.currentContext!,
+                        //     categories: categories,
+                        //     currentPage: currentPage,
+                        //     lastPage: lastPage,
+                        //   ))
+                        : Column(
+                            children: [
+                              const Expanded(
+                                flex: 1,
+                                child: Center(
+                                  child: Text(
+                                    'Categories Data',
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xff6777ef),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 6,
+                                child: GridView.builder(
+                                  controller: scrollController,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                    vertical: 25.0,
+                                  ),
+                                  gridDelegate:
+                                      SliverGridDelegateWithMaxCrossAxisExtent(
+                                    maxCrossAxisExtent:
+                                        MediaQuery.of(context).size.width / 2,
+                                    childAspectRatio: 2 / 2,
+                                    crossAxisSpacing: 8,
+                                    mainAxisSpacing: 10,
+                                  ),
+                                  itemCount: categories.length,
+                                  itemBuilder: (context, index) => CategoryCard(
+                                    alertContext: _scaffoldkey.currentContext!,
+                                    category: categories[index],
+                                    deleteData: deleteData,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
                     : const AddCategory(),
               ),
             ),

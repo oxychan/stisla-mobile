@@ -29,7 +29,7 @@ class CategoryService {
       List<dynamic> listCategories =
           (jsonObject as Map<String, dynamic>)['data'];
 
-      var page = (jsonObject as Map<String, dynamic>)['meta'];
+      var page = jsonObject['meta'];
 
       List listPage = page.values.toList();
 
@@ -61,6 +61,22 @@ class CategoryService {
         "name": name,
       },
     );
+
+    return response;
+  }
+
+  static Future requestDelete(Category category) async {
+    var apiUrl =
+        Uri.parse('${CategoryService.endPoint}/api/category/${category.id}');
+
+    final sharedPref = await SharedPreferences.getInstance();
+    final token = sharedPref.getString('token');
+
+    final response = await http.delete(apiUrl, headers: {
+      "Accept": "application/json",
+      "Access-Control_Allow_Origin": "*",
+      "Authorization": "Bearer $token",
+    });
 
     return response;
   }
