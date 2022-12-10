@@ -1,6 +1,7 @@
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:stisla/page/edit_category.dart';
 
 import '../../models/category_model.dart';
 
@@ -42,10 +43,13 @@ class CategoryCard extends StatelessWidget {
           SlidableAction(
             borderRadius: BorderRadius.circular(8.0),
             onPressed: (context) {
-              Navigator.pushNamed(
+              Navigator.push(
                 context,
-                '/detail-category',
-                arguments: Category(id: category.id, name: category.name),
+                MaterialPageRoute(
+                  builder: (context) => EditCategory(
+                    category: category,
+                  ),
+                ),
               );
             },
             backgroundColor: const Color(0xff6777ef),

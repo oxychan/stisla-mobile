@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/category_model.dart';
@@ -65,6 +66,28 @@ class CategoryService {
     return response;
   }
 
+  static Future requestUpdate(Category category, String newCategoryName) async {
+    var apiUrl =
+        Uri.parse('${CategoryService.endPoint}/api/category/${category.id}');
+
+    final sharedPref = await SharedPreferences.getInstance();
+    final token = sharedPref.getString('token');
+
+    final response = await http.put(
+      apiUrl,
+      headers: {
+        "Accept": "application/json",
+        "Access-Control_Allow_Origin": "*",
+        "Authorization": "Bearer $token",
+      },
+      body: {
+        "name": newCategoryName,
+      },
+    );
+
+    return response;
+  }
+
   static Future requestDelete(Category category) async {
     var apiUrl =
         Uri.parse('${CategoryService.endPoint}/api/category/${category.id}');
@@ -72,11 +95,14 @@ class CategoryService {
     final sharedPref = await SharedPreferences.getInstance();
     final token = sharedPref.getString('token');
 
-    final response = await http.delete(apiUrl, headers: {
-      "Accept": "application/json",
-      "Access-Control_Allow_Origin": "*",
-      "Authorization": "Bearer $token",
-    });
+    final response = await http.delete(
+      apiUrl,
+      headers: {
+        "Accept": "application/json",
+        "Access-Control_Allow_Origin": "*",
+        "Authorization": "Bearer $token",
+      },
+    );
 
     return response;
   }

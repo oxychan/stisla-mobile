@@ -65,8 +65,7 @@ class ListCategories extends StatelessWidget {
                         content:
                             const Text('Are you sure to delete this item?'),
                       )) {
-                        CategoryService.requestDelete(categories[index])
-                            .then((response) => print(response.statusCode));
+                        CategoryService.requestDelete(categories[index]);
                       }
                     },
                     backgroundColor: Colors.red,

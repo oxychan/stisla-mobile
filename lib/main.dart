@@ -1,6 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:stisla/page/dashboard.dart';
-import 'package:stisla/page/detail_category.dart';
+import 'package:stisla/page/edit_category.dart';
 import 'package:stisla/page/login.dart';
 import 'package:stisla/page/register.dart';
 import 'package:stisla/page/splash_screen.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/register': (context) => const RegisterPage(),
         '/splash': (context) => const SplashScreen(),
-        '/detail-category': (context) => const DetailCategory(),
+        '/detail-category': (context) => EditCategory(),
       },
     );
   }
