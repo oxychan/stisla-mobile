@@ -4,6 +4,7 @@
 
 1. Login Requires All Fields
    ![](assets/ScreenCapture/login_require_all.gif | width=100px)
+   <img src="assets/ScreenCapture/login_require_all.gif" width="100" />
 2. Login Require Email Field
    ![](assets/ScreenCapture/login_require_email.gif | width=100)
 3. Login Require Password Field
