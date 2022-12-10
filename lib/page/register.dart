@@ -306,6 +306,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                               emailError = errors['email'][0];
                                               passwordError =
                                                   errors['password'][0];
+                                              passwordConfirmationError =
+                                                  'The password confirmation field is required.';
                                             } else {
                                               if (errors.containsKey('name')) {
                                                 nameError = errors['name'][0];
