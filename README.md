@@ -17,6 +17,10 @@
 7. User Already Login And Open The Application \
    <img src="assets/ScreenCapture/already_login.gif" width="200" />
 
+## Logout
+
+<img src="assets/ScreenCapture/logout.gif" width="200" />
+
 ## Register
 
 1. Register Requires All Fields \
